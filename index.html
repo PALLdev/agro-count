@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgroCount - Conteo de Yemas en Terreno</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="header-main">
+                <div class="logo-area">
+                    <span class="logo-icon">🌿</span>
+                    <div>
+                        <h1>AgroCount</h1>
+                        <p class="subtitle">Control de Conteo de Yemas</p>
+                    </div>
+                </div>
+                <div class="status-badges">
+                    <span id="badge-offline" class="badge badge-success">⚡ Offline OK</span>
+                    <span id="badge-gps" class="badge badge-warning">📍 GPS Inactivo</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="app-content">
+            <!-- SECCIÓN 1: DATOS GENERALES -->
+            <section class="card config-card">
+                <div class="card-header">
+                    <h2>📋 Datos de la Jornada</h2>
+                </div>
+                <div class="card-body grid-form">
+                    <div class="form-group">
+                        <label for="fecha">Fecha</label>
+                        <input type="date" id="fecha" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="supervisor">Supervisor</label>
+                        <input type="text" id="supervisor" placeholder="Nombre del Supervisor" required autocomplete="off">
+                    </div>
+                    <div class="form-group autocomplete">
+                        <label for="campo">Campo / Fundo</label>
+                        <input type="text" id="campo" placeholder="Ej. El Olivar" required autocomplete="off">
+                        <div id="campo-suggestions" class="suggestions-list"></div>
+                    </div>
+                    <div class="form-group autocomplete">
+                        <label for="cuartel">Cuartel / Bloque</label>
+                        <input type="text" id="cuartel" placeholder="Ej. Cuartel B-12" required autocomplete="off">
+                        <div id="cuartel-suggestions" class="suggestions-list"></div>
+                    </div>
+                    <div class="form-group coordinates-group">
+                        <label for="coordenadas">Coordenadas</label>
+                        <div class="input-action-wrapper">
+                            <input type="text" id="coordenadas" placeholder="Lat, Lng o Link de GPS" autocomplete="off">
+                            <button type="button" id="btn-gps" class="btn btn-secondary" title="Obtener coordenadas actuales">
+                                <span class="btn-icon">🎯</span> GPS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: CONTROL DE PLANTA -->
+            <section class="card plant-card">
+                <div class="card-header plant-header-controls">
+                    <h2>🌱 Conteo por Planta</h2>
+                    <div class="plant-number-wrapper">
+                        <label for="num-planta">Planta N°</label>
+                        <input type="number" id="num-planta" value="1" min="1" required>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- CONTENEDOR DE EJES -->
+                    <div class="axes-grid">
+                        
+                        <!-- EJE NORTE -->
+                        <div class="axis-card norte" data-eje="Norte">
+                            <div class="axis-header">
+                                <h3>Norte</h3>
+                            </div>
+                            <div class="axis-body">
+                                <div class="form-group autocomplete">
+                                    <label>Trabajador</label>
+                                    <input type="text" class="worker-input" placeholder="Nombre trabajador" autocomplete="off">
+                                    <div class="suggestions-list worker-suggestions"></div>
+                                </div>
+                                <div class="counters-list">
+                                    <div class="counter-item">
+                                        <span class="counter-label">Punto Rojo</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="punto_rojo" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Estilo Elongado</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="estilo_elongado" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Plena Flor</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="plena_flor" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Flor Senescente</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="flor_senescente" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EJE SUR -->
+                        <div class="axis-card sur" data-eje="Sur">
+                            <div class="axis-header">
+                                <h3>Sur</h3>
+                            </div>
+                            <div class="axis-body">
+                                <div class="form-group autocomplete">
+                                    <label>Trabajador</label>
+                                    <input type="text" class="worker-input" placeholder="Nombre trabajador" autocomplete="off">
+                                    <div class="suggestions-list worker-suggestions"></div>
+                                </div>
+                                <div class="counters-list">
+                                    <div class="counter-item">
+                                        <span class="counter-label">Punto Rojo</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="punto_rojo" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Estilo Elongado</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="estilo_elongado" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Plena Flor</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="plena_flor" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Flor Senescente</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="flor_senescente" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EJE ESTE -->
+                        <div class="axis-card este" data-eje="Este">
+                            <div class="axis-header">
+                                <h3>Este</h3>
+                            </div>
+                            <div class="axis-body">
+                                <div class="form-group autocomplete">
+                                    <label>Trabajador</label>
+                                    <input type="text" class="worker-input" placeholder="Nombre trabajador" autocomplete="off">
+                                    <div class="suggestions-list worker-suggestions"></div>
+                                </div>
+                                <div class="counters-list">
+                                    <div class="counter-item">
+                                        <span class="counter-label">Punto Rojo</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="punto_rojo" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Estilo Elongado</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="estilo_elongado" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Plena Flor</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="plena_flor" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Flor Senescente</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="flor_senescente" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EJE OESTE -->
+                        <div class="axis-card oeste" data-eje="Oeste">
+                            <div class="axis-header">
+                                <h3>Oeste</h3>
+                            </div>
+                            <div class="axis-body">
+                                <div class="form-group autocomplete">
+                                    <label>Trabajador</label>
+                                    <input type="text" class="worker-input" placeholder="Nombre trabajador" autocomplete="off">
+                                    <div class="suggestions-list worker-suggestions"></div>
+                                </div>
+                                <div class="counters-list">
+                                    <div class="counter-item">
+                                        <span class="counter-label">Punto Rojo</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="punto_rojo" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Estilo Elongado</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="estilo_elongado" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Plena Flor</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="plena_flor" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                    <div class="counter-item">
+                                        <span class="counter-label">Flor Senescente</span>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn-count dec">-</button>
+                                            <input type="number" class="count-val" data-state="flor_senescente" value="0" min="0">
+                                            <button type="button" class="btn-count inc">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- BOTÓN GUARDAR PLANTA -->
+                    <div class="action-bar">
+                        <button type="button" id="btn-save-plant" class="btn btn-primary btn-large">
+                            💾 Guardar Planta
+                        </button>
+                        <button type="button" id="btn-reset-form" class="btn btn-danger-outline">
+                            🔄 Limpiar Formulario
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: TABLA DE HISTORIAL -->
+            <section class="card history-card">
+                <div class="card-header history-header">
+                    <h2>📊 Conteos de la Jornada</h2>
+                    <span id="record-count" class="badge badge-info">0 filas registradas</span>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="table-history" class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Planta</th>
+                                    <th>Eje</th>
+                                    <th>Trabajador</th>
+                                    <th class="text-center text-red">P. Rojo</th>
+                                    <th class="text-center text-orange">E. Elongado</th>
+                                    <th class="text-center text-blue">P. Flor</th>
+                                    <th class="text-center text-purple">F. Senescente</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-body">
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">No hay plantas registradas en esta jornada todavía.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="export-actions">
+                        <button type="button" id="btn-export" class="btn btn-success btn-large">
+                            📥 Exportar a Excel (CSV)
+                        </button>
+                        <button type="button" id="btn-clear-all" class="btn btn-danger">
+                            🗑️ Iniciar Nuevo Conteo (Borrar Todo)
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="app-footer">
+            <p>AgroCount v1.0.0 &bull; Diseñado para funcionamiento local fuera de red &bull; Datos guardados en dispositivo</p>
+        </footer>
+    </div>
+
+    <!-- MODAL DE EDICIÓN -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>✏️ Editar Conteo de Eje</h2>
+                <button type="button" class="btn-close-modal" id="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="edit-index">
+                <div class="grid-form edit-meta-grid">
+                    <div class="form-group">
+                        <label>Planta N°</label>
+                        <input type="number" id="edit-planta" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Eje</label>
+                        <select id="edit-eje" disabled>
+                            <option value="Norte">Norte</option>
+                            <option value="Sur">Sur</option>
+                            <option value="Este">Este</option>
+                            <option value="Oeste">Oeste</option>
+                        </select>
+                    </div>
+                    <div class="form-group autocomplete">
+                        <label>Trabajador</label>
+                        <input type="text" id="edit-trabajador" placeholder="Nombre" required autocomplete="off">
+                        <div id="edit-worker-suggestions" class="suggestions-list"></div>
+                    </div>
+                </div>
+                
+                <hr class="modal-divider">
+                
+                <div class="counters-edit-grid">
+                    <div class="counter-item">
+                        <span class="counter-label text-red">Punto Rojo</span>
+                        <div class="counter-controls">
+                            <button type="button" class="btn-count modal-dec">-</button>
+                            <input type="number" id="edit-punto-rojo" value="0" min="0">
+                            <button type="button" class="btn-count modal-inc">+</button>
+                        </div>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-label text-orange">Estilo Elongado</span>
+                        <div class="counter-controls">
+                            <button type="button" class="btn-count modal-dec">-</button>
+                            <input type="number" id="edit-estilo-elongado" value="0" min="0">
+                            <button type="button" class="btn-count modal-inc">+</button>
+                        </div>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-label text-blue">Plena Flor</span>
+                        <div class="counter-controls">
+                            <button type="button" class="btn-count modal-dec">-</button>
+                            <input type="number" id="edit-plena-flor" value="0" min="0">
+                            <button type="button" class="btn-count modal-inc">+</button>
+                        </div>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-label text-purple">Flor Senescente</span>
+                        <div class="counter-controls">
+                            <button type="button" class="btn-count modal-dec">-</button>
+                            <input type="number" id="edit-flor-senescente" value="0" min="0">
+                            <button type="button" class="btn-count modal-inc">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btn-save-edit" class="btn btn-primary">Guardar Cambios</button>
+                <button type="button" id="btn-cancel-edit" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICACIONES TOAST -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
